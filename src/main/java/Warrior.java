@@ -9,15 +9,8 @@ public class Warrior extends Character {
     public int getStrength() {
         return this.strength;
     }
-
     public void performHeavyAttack(Character target) {
-       if(target == null){
-           throw new InvalidTargetException ();
-       }
-        if(!target.isAlive()){
-            throw new CharacterAlreadyDeadException(target.name + " ya está muerto");
-
-        }
+        super.validateTarget(target);
         target.receiveDamage(this.strength);
     }
 

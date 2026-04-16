@@ -1,5 +1,9 @@
 public class Mage extends Character {
     private int mana;
+    private static final int CAST_SPELL_MANA_COST = 10;
+    private static final int CAST_SPELL_DAMAGE = 20;
+    private static final int HEAL_MANA_MOST = 15;
+    private static final int HEAL_AMOUNT = 20;
 
 
     public Mage(String name, int health, int mana) {
@@ -10,37 +14,23 @@ public class Mage extends Character {
     public int getMana() {
         return this.mana;
     }
-
-    public void castSpell(Character target) {
-        if(target == null){
-            throw new InvalidTargetException();
-        }
-        if(!target.isAlive()){
-            throw new CharacterAlreadyDeadException(target.name + " ya está muerto");
-
-        }
-        if (this.mana - 10 >= 0) {
-            this.mana -= 10;
-            target.receiveDamage(20);
-            target.status = Status.POISONED;
-        }else{
+        //Helper. Metodo para comprobar el mana y consumirlo
+    public void consumeMana(int cost){
+        if(this.mana < cost){
             throw new InsufficientManaException(this.name + " no tiene maná suficiente");
         }
+        this.mana -= cost;
     }
 
+    public void castSpell(Character target) {
+       super.validateTarget(target);
+        consumeMana(CAST_SPELL_MANA_COST);
+        target.receiveDamage(CAST_SPELL_DAMAGE);
+        target.status = Status.POISONED;
+    }
     public void heal(Character target) {
-        if(target == null){
-            throw new InvalidTargetException();
-        }
-        if(!target.isAlive()){
-            throw new CharacterAlreadyDeadException(target.name + " ya está muerto");
-
-        }
-        if(this.mana -15 >=0){
-            this.mana -= 15;
-            target.health += 20;
-        }else{
-            throw new InsufficientManaException(this.name + " no tiene maná suficiente");
-         }
+       super.validateTarget(target);
+        consumeMana(HEAL_MANA_MOST);
+        target.health += HEAL_AMOUNT;
     }
 }
